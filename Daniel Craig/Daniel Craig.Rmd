@@ -1,0 +1,114 @@
+---
+title: "Lab 1: Intro to R"
+author: "Daniel Craig"
+date: "`r Sys.Date()`"
+output: openintro::lab_report
+---
+
+```{r load-packages, message=FALSE}
+library(tidyverse)
+library(openintro)
+```
+
+### Exercise 1
+
+```{r view-girls-counts}
+arbuthnot$girls
+```
+
+
+### Exercise 2
+
+There seems to be a significant increase in girls baptized per year starting at 1660. I assume some type of religious movement sparked at that time.
+
+```{r trend-girls}
+ggplot(data = arbuthnot, aes(x = year, y = girls)) + 
+  geom_point()
+```
+
+
+### Exercise 3
+
+It doesn't seem like a strong relationship but a downward trend from 1660 onward seems to be present.
+
+```{r plot-prop-boys-arbuthnot}
+arbuthnot <- arbuthnot %>%
+  mutate(total = boys + girls)
+
+arbuthnot <- arbuthnot %>%
+  mutate(boy_to_girl_ratio = boys / girls)
+
+arbuthnot <- arbuthnot %>%
+  mutate(boy_ratio = boys / total)
+
+ggplot(data = arbuthnot, aes(x = year, y = boy_ratio)) + 
+  geom_point()
+```
+
+
+### Exercise 4
+  
+Years included in the data are 1940 - 2002  
+  
+Dimensions are 63 rows by 3 columns  
+  
+After our manipulation, names of the columns are: year,boys,girls
+  
+
+```{r dim-present}
+data('present',package = 'openintro')
+unique(present$year)
+dim(present)
+names(present)
+```
+
+
+### Exercise 5
+
+Not surprisingly, modern population counts are of magnitudes higher. Although their average ratios are similar. Present day US has a slightly lower boy to girl ratio of 1.05 compared to arbuthnot's 1.07
+
+```{r count-compare}
+arbuthnot %>%
+  summarize(min = min(boys), max = max(boys))
+
+present %>%
+  summarize(min = min(boys), max = max(boys))
+
+present <- present %>%
+  mutate(total = boys + girls)
+
+present <- present %>%
+  mutate(boy_to_girl_ratio = boys / girls)
+
+present <- present %>%
+  mutate(boy_ratio = boys / total)
+
+mean(present$boy_to_girl_ratio)
+mean(present$boy_ratio)
+mean(arbuthnot$boy_to_girl_ratio)
+mean(arbuthnot$boy_ratio)
+
+```
+
+
+### Exercise 6
+
+The observation holds, but is decreasing and slightly less than arbuthnot's findings.
+
+```{r plot-prop-boys-present}
+ggplot(data = present, aes(x = year, y = boy_ratio)) + 
+  geom_point()
+```
+
+
+### Exercise 7
+
+1961 had the highest total number of births.
+
+```{r find-max-total}
+present <- present %>%
+  mutate(total = boys + girls)
+
+present %>% arrange(desc(total))
+```
+
